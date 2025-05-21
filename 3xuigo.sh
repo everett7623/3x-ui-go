@@ -331,7 +331,7 @@ systemctl enable x-ui
 
 # 10. 显示安装结果和使用信息
 echo -e "\n${GREEN}==================================${PLAIN}"
-echo -e "${RED}3x-ui 安装完成！登录信息:${PLAIN}"
+echo -e "${RED}3x-ui 安装完成！登录信息往上翻${PLAIN}"
 echo -e "$LOGIN_INFO"
 echo -e "${GREEN}==================================${PLAIN}"
 echo -e "${YELLOW}如需管理面板，可使用以下命令:${PLAIN}"
@@ -353,4 +353,4 @@ echo -e "${GREEN}==================================${PLAIN}"
 # 清理临时文件
 rm -f $TMP_INFO_FILE
 
-echo -e "${GREEN}优化脚本执行完毕！${PLAIN}"
+echo -e "${GREEN}3X-UI一键安装脚本执行完毕！${PLAIN}"
