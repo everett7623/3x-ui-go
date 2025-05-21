@@ -248,11 +248,11 @@ if [ -f /etc/pam.d/common-session ]; then
     grep -q "session required pam_limits.so" /etc/pam.d/common-session || echo "session required pam_limits.so" >> /etc/pam.d/common-session
 fi
 
-# 7. 安装X-UI，自动确认并安装
+# 7. 安装X-UI，使用expect自动确认并设置面板端口
 echo -e "${YELLOW}[步骤3] 安装3x-ui面板${PLAIN}"
-echo -e "${GREEN}安装过程中会生成随机的登录凭据，请注意记录${PLAIN}"
+echo -e "${GREEN}将自动设置面板端口为18888并捕获随机生成的登录凭据${PLAIN}"
 
-# 使用expect自动交互（如果没有安装，先安装expect）
+# 确保安装expect用于自动交互
 if ! command -v expect &> /dev/null; then
     echo -e "${YELLOW}安装expect以实现自动交互${PLAIN}"
     if [[ "${release}" == "centos" ]]; then
@@ -262,14 +262,46 @@ if ! command -v expect &> /dev/null; then
     fi
 fi
 
-# 直接运行安装脚本，让它生成随机登录信息以提高安全性
-echo -e "${YELLOW}正在安装3x-ui，将生成随机的安全登录凭据...${PLAIN}"
-bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)
+# 使用expect进行自动交互安装，设置端口为18888
+echo -e "${YELLOW}正在安装3x-ui，将自动设置端口并捕获登录凭据...${PLAIN}"
 
-# 记录一下安装过程输出信息以便后续显示
-echo -e "${YELLOW}请记住上方显示的随机生成的用户名、密码和访问路径，以便登录面板${PLAIN}"
+TMP_INFO_FILE=$(mktemp)
 
-# 8. 安装并配置Fail2ban防止暴力破解
+# 使用expect进行自动交互并保存输出
+expect -c "
+set timeout 300
+spawn bash -c {curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh | bash}
+expect {
+    \"*customize the Panel Port*\" {
+        send \"y\r\"
+        expect \"*set up the panel port:*\"
+        send \"18888\r\"
+        exp_continue
+    }
+    \"*Access URL:*\" {
+        # 捕获包含登录信息的行
+        log_file -noappend $TMP_INFO_FILE
+        expect \"*x-ui uninstall*\"
+        log_file
+        exp_continue
+    }
+    eof
+}
+"
+
+# 提取关键登录信息并保存到变量
+LOGIN_INFO=$(grep -A5 -B3 "Access URL:" $TMP_INFO_FILE | grep -E "Username:|Password:|Port:|WebBasePath:|Access URL:")
+
+# 提取URL以便后续显示
+ACCESS_URL=$(echo "$LOGIN_INFO" | grep "Access URL:" | awk '{print $3}')
+
+# 保存登录信息供后续使用
+echo "$LOGIN_INFO" > /root/x-ui-login-info.txt
+chmod 600 /root/x-ui-login-info.txt
+
+echo -e "${GREEN}安装完成，登录信息已保存到 /root/x-ui-login-info.txt${PLAIN}"
+
+# 安装并配置Fail2ban防止暴力破解
 echo -e "${YELLOW}[安全优化] 安装Fail2ban防止暴力破解${PLAIN}"
 if [[ "${release}" == "centos" ]]; then
     yum install -y fail2ban
@@ -320,15 +352,14 @@ systemctl enable x-ui
 echo -e "\n${GREEN}==================================${PLAIN}"
 echo -e "${GREEN}3x-ui 安装完成！${PLAIN}"
 echo -e "${GREEN}==================================${PLAIN}"
-echo -e "${YELLOW}请查看上方显示的随机生成的登录信息${PLAIN}"
-echo -e "${YELLOW}格式通常为:${PLAIN}"
-echo -e "${GREEN}Username: xxxxx${PLAIN}"
-echo -e "${GREEN}Password: xxxxx${PLAIN}"
-echo -e "${GREEN}Port: xxxxx${PLAIN}"
-echo -e "${GREEN}WebBasePath: xxxxx (如果有)${PLAIN}"
-echo -e "${GREEN}Access URL: http://服务器IP:端口/路径${PLAIN}"
-echo -e "${RED}请立即保存这些信息，它们不会再次显示！${PLAIN}"
+echo -e "${YELLOW}面板登录信息：${PLAIN}"
+if [ -f /root/x-ui-login-info.txt ]; then
+    cat /root/x-ui-login-info.txt
+else
+    echo -e "${RED}未能捕获登录信息，请查看安装过程中的输出${PLAIN}"
+fi
 echo -e "${GREEN}==================================${PLAIN}"
+echo -e "${YELLOW}登录信息已保存至 /root/x-ui-login-info.txt${PLAIN}"
 echo -e "${YELLOW}如需管理面板，可使用以下命令:${PLAIN}"
 echo -e "${GREEN}x-ui start${PLAIN}    - 启动x-ui面板"
 echo -e "${GREEN}x-ui stop${PLAIN}     - 停止x-ui面板"
