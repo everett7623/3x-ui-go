@@ -276,7 +276,7 @@ systemctl enable x-ui
 
 # 10. 显示安装结果和使用信息
 echo -e "\n${GREEN}==================================${PLAIN}"
-echo -e "${GREEN}3x-ui 安装完成！登录信息往上翻${PLAIN}"
+echo -e "${RED}3x-ui 安装完成！登录信息往上翻${PLAIN}"
 echo -e "${GREEN}==================================${PLAIN}"
 echo -e "${YELLOW}如需管理面板，可使用以下命令:${PLAIN}"
 echo -e "${GREEN}x-ui start${PLAIN}    - 启动x-ui面板"
