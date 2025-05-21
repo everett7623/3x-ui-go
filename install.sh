@@ -223,10 +223,6 @@ LOGIN_INFO=$(grep -A5 -B3 "Access URL:" $TMP_INFO_FILE | grep -E "Username:|Pass
 # 提取URL以便后续显示
 ACCESS_URL=$(echo "$LOGIN_INFO" | grep "Access URL:" | awk '{print $3}')
 
-# 保存登录信息供后续使用
-echo "$LOGIN_INFO" > /root/x-ui-login-info.txt
-chmod 600 /root/x-ui-login-info.txt
-
 # 安装并配置Fail2ban防止暴力破解
 echo -e "${YELLOW}[安全优化] 安装Fail2ban防止暴力破解${PLAIN}"
 if [[ "${release}" == "centos" ]]; then
