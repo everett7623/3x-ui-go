@@ -129,9 +129,36 @@ net.ipv4.ip_local_port_range = 1024 65535
 EOF
 sysctl -p && sysctl --system
 
-# 5. 设置DNS为国际知名DNS，避免DNS污染问题
+# 5. 设置DNS - 修复防止resolv.conf被修改的问题
 echo -e "${YELLOW}[优化] 设置防DNS污染的DNS服务器${PLAIN}"
-cat > /etc/resolv.conf << EOF
+
+# 检查系统是否使用systemd-resolved
+if systemctl status systemd-resolved &>/dev/null; then
+    echo -e "${YELLOW}检测到systemd-resolved服务，正在配置...${PLAIN}"
+    
+    # 创建自定义DNS配置
+    cat > /etc/systemd/resolved.conf << EOF
+[Resolve]
+DNS=1.1.1.1 1.0.0.1 8.8.8.8 8.8.4.4 208.67.222.222 208.67.220.220 9.9.9.9
+FallbackDNS=8.8.8.8 8.8.4.4
+DNSSEC=yes
+DNSOverTLS=yes
+Cache=yes
+EOF
+    
+    # 重启systemd-resolved服务
+    systemctl restart systemd-resolved
+    
+    echo -e "${GREEN}已通过systemd-resolved配置DNS服务器${PLAIN}"
+else
+    # 传统方式修改resolv.conf
+    echo -e "${YELLOW}使用传统方式配置DNS...${PLAIN}"
+    
+    # 备份原始resolv.conf
+    cp /etc/resolv.conf /etc/resolv.conf.bak
+    
+    # 写入新的DNS配置
+    cat > /etc/resolv.conf << EOF
 # Cloudflare DNS
 nameserver 1.1.1.1
 nameserver 1.0.0.1
@@ -145,9 +172,40 @@ nameserver 208.67.220.220
 nameserver 9.9.9.9
 options edns0 trust-ad
 EOF
-
-# 防止resolv.conf被覆盖
-chattr +i /etc/resolv.conf
+    
+    # 尝试设置resolv.conf为不可修改，但增加错误处理
+    echo -e "${YELLOW}尝试保护resolv.conf不被修改...${PLAIN}"
+    if ! chattr +i /etc/resolv.conf 2>/dev/null; then
+        echo -e "${YELLOW}警告: 无法设置resolv.conf为不可修改，这在某些系统上是正常的${PLAIN}"
+        echo -e "${YELLOW}将尝试替代方案来保护DNS设置...${PLAIN}"
+        
+        # NetworkManager配置 (适用于使用NetworkManager的系统)
+        if command -v nmcli &>/dev/null; then
+            echo -e "${YELLOW}检测到NetworkManager，配置其使用自定义DNS...${PLAIN}"
+            
+            mkdir -p /etc/NetworkManager/conf.d/
+            cat > /etc/NetworkManager/conf.d/dns-servers.conf << EOF
+[main]
+dns=none
+EOF
+            
+            systemctl restart NetworkManager 2>/dev/null || true
+            echo -e "${GREEN}已配置NetworkManager不覆盖DNS设置${PLAIN}"
+        fi
+        
+        # dhclient配置 (适用于使用dhclient的系统)
+        if [ -d /etc/dhcp/ ]; then
+            echo -e "${YELLOW}配置dhclient不覆盖DNS设置...${PLAIN}"
+            
+            cat > /etc/dhcp/dhclient.conf << EOF
+supersede domain-name-servers 1.1.1.1, 8.8.8.8, 208.67.222.222, 9.9.9.9;
+EOF
+            echo -e "${GREEN}已配置dhclient不覆盖DNS设置${PLAIN}"
+        fi
+    else
+        echo -e "${GREEN}已成功保护resolv.conf不被修改${PLAIN}"
+    fi
+fi
 
 # 6. 调整系统打开文件数限制（对高并发连接至关重要）
 echo -e "${YELLOW}[优化] 增加系统文件打开数限制${PLAIN}"
@@ -176,11 +234,8 @@ if [ -f /etc/pam.d/common-session ]; then
     grep -q "session required pam_limits.so" /etc/pam.d/common-session || echo "session required pam_limits.so" >> /etc/pam.d/common-session
 fi
 
-# 7. 安装X-UI，使用expect自动确认并设置面板端口
-echo -e "${YELLOW}[步骤3] 安装3x-ui面板${PLAIN}"
-echo -e "${GREEN}将自动设置面板端口为18888并捕获随机生成的登录凭据${PLAIN}"
-
-# 确保安装expect用于自动交互
+# 检查是否安装expect
+echo -e "${YELLOW}检查expect是否安装...${PLAIN}"
 if ! command -v expect &> /dev/null; then
     echo -e "${YELLOW}安装expect以实现自动交互${PLAIN}"
     if [[ "${release}" == "centos" ]]; then
@@ -189,6 +244,10 @@ if ! command -v expect &> /dev/null; then
         apt install -y expect
     fi
 fi
+
+# 7. 安装X-UI，使用expect自动确认并设置面板端口
+echo -e "${YELLOW}[步骤3] 安装3x-ui面板${PLAIN}"
+echo -e "${GREEN}将自动设置面板端口为18888并捕获随机生成的登录凭据${PLAIN}"
 
 # 使用expect进行自动交互安装，设置端口为18888
 echo -e "${YELLOW}正在安装3x-ui，将自动设置端口并捕获登录凭据...${PLAIN}"
@@ -223,7 +282,7 @@ LOGIN_INFO=$(grep -A5 -B3 "Access URL:" $TMP_INFO_FILE | grep -E "Username:|Pass
 # 提取URL以便后续显示
 ACCESS_URL=$(echo "$LOGIN_INFO" | grep "Access URL:" | awk '{print $3}')
 
-# 安装并配置Fail2ban防止暴力破解
+# 8. 安装并配置Fail2ban防止暴力破解
 echo -e "${YELLOW}[安全优化] 安装Fail2ban防止暴力破解${PLAIN}"
 if [[ "${release}" == "centos" ]]; then
     yum install -y fail2ban
@@ -272,7 +331,8 @@ systemctl enable x-ui
 
 # 10. 显示安装结果和使用信息
 echo -e "\n${GREEN}==================================${PLAIN}"
-echo -e "${RED}3x-ui 安装完成！登录信息往上翻${PLAIN}"
+echo -e "${RED}3x-ui 安装完成！登录信息:${PLAIN}"
+echo -e "$LOGIN_INFO"
 echo -e "${GREEN}==================================${PLAIN}"
 echo -e "${YELLOW}如需管理面板，可使用以下命令:${PLAIN}"
 echo -e "${GREEN}x-ui start${PLAIN}    - 启动x-ui面板"
@@ -289,3 +349,8 @@ echo -e "${GREEN}x-ui legacy${PLAIN}   - 旧版本"
 echo -e "${GREEN}x-ui install${PLAIN}  - 重新安装x-ui面板"
 echo -e "${GREEN}x-ui uninstall${PLAIN} - 卸载x-ui面板"
 echo -e "${GREEN}==================================${PLAIN}"
+
+# 清理临时文件
+rm -f $TMP_INFO_FILE
+
+echo -e "${GREEN}优化脚本执行完毕！${PLAIN}"
