@@ -36,7 +36,7 @@ echo -e "${YELLOW}[步骤1] 更新系统并安装依赖${PLAIN}"
 if [[ "${release}" == "centos" ]]; then
     yum update -y && yum install wget curl unzip sudo socat -y
 else
-    apt update && apt upgrade -y && apt install wget curl unzip sudo socat iptables -y
+    apt update && apt upgrade -y && apt install wget curl unzip sudo socat -y
 fi
 
 # 3. 设置系统时区为上海
@@ -302,6 +302,4 @@ echo -e "${GREEN}x-ui update${PLAIN}   - 更新x-ui面板"
 echo -e "${GREEN}x-ui legacy${PLAIN}   - 旧版本"
 echo -e "${GREEN}x-ui install${PLAIN}  - 重新安装x-ui面板"
 echo -e "${GREEN}x-ui uninstall${PLAIN} - 卸载x-ui面板"
-echo -e "${GREEN}==================================${PLAIN}"
-echo -e "${GREEN}防火墙已配置为允许所有端口，您可以在面板中自由配置任何端口（包括80/443）${PLAIN}"
 echo -e "${GREEN}==================================${PLAIN}"
