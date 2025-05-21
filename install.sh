@@ -280,26 +280,3 @@ systemctl enable x-ui
 echo -e "\n${GREEN}==================================${PLAIN}"
 echo -e "${GREEN}3x-ui 安装完成！${PLAIN}"
 echo -e "${GREEN}==================================${PLAIN}"
-echo -e "${YELLOW}面板登录信息：${PLAIN}"
-if [ -f /root/x-ui-login-info.txt ]; then
-    cat /root/x-ui-login-info.txt
-else
-    echo -e "${RED}未能捕获登录信息，请查看安装过程中的输出${PLAIN}"
-fi
-echo -e "${GREEN}==================================${PLAIN}"
-echo -e "${YELLOW}登录信息已保存至 /root/x-ui-login-info.txt${PLAIN}"
-echo -e "${YELLOW}如需管理面板，可使用以下命令:${PLAIN}"
-echo -e "${GREEN}x-ui start${PLAIN}    - 启动x-ui面板"
-echo -e "${GREEN}x-ui stop${PLAIN}     - 停止x-ui面板"
-echo -e "${GREEN}x-ui restart${PLAIN}  - 重启x-ui面板"
-echo -e "${GREEN}x-ui status${PLAIN}   - 查看x-ui状态"
-echo -e "${GREEN}x-ui settings${PLAIN} - 查看当前设置"
-echo -e "${GREEN}x-ui enable${PLAIN}   - 设置x-ui开机自启"
-echo -e "${GREEN}x-ui disable${PLAIN}  - 取消x-ui开机自启"
-echo -e "${GREEN}x-ui log${PLAIN}      - 查看x-ui日志"
-echo -e "${GREEN}x-ui banlog${PLAIN}   - 查看Fail2ban封禁日志"
-echo -e "${GREEN}x-ui update${PLAIN}   - 更新x-ui面板"
-echo -e "${GREEN}x-ui legacy${PLAIN}   - 旧版本"
-echo -e "${GREEN}x-ui install${PLAIN}  - 重新安装x-ui面板"
-echo -e "${GREEN}x-ui uninstall${PLAIN} - 卸载x-ui面板"
-echo -e "${GREEN}==================================${PLAIN}"
