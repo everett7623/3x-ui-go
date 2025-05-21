@@ -227,8 +227,6 @@ ACCESS_URL=$(echo "$LOGIN_INFO" | grep "Access URL:" | awk '{print $3}')
 echo "$LOGIN_INFO" > /root/x-ui-login-info.txt
 chmod 600 /root/x-ui-login-info.txt
 
-echo -e "${GREEN}安装完成，登录信息已保存到 /root/x-ui-login-info.txt${PLAIN}"
-
 # 安装并配置Fail2ban防止暴力破解
 echo -e "${YELLOW}[安全优化] 安装Fail2ban防止暴力破解${PLAIN}"
 if [[ "${release}" == "centos" ]]; then
@@ -278,5 +276,20 @@ systemctl enable x-ui
 
 # 10. 显示安装结果和使用信息
 echo -e "\n${GREEN}==================================${PLAIN}"
-echo -e "${GREEN}3x-ui 安装完成！${PLAIN}"
+echo -e "${GREEN}3x-ui 安装完成！登录信息往上翻${PLAIN}"
+echo -e "${GREEN}==================================${PLAIN}"
+echo -e "${YELLOW}如需管理面板，可使用以下命令:${PLAIN}"
+echo -e "${GREEN}x-ui start${PLAIN}    - 启动x-ui面板"
+echo -e "${GREEN}x-ui stop${PLAIN}     - 停止x-ui面板"
+echo -e "${GREEN}x-ui restart${PLAIN}  - 重启x-ui面板"
+echo -e "${GREEN}x-ui status${PLAIN}   - 查看x-ui状态"
+echo -e "${GREEN}x-ui settings${PLAIN} - 查看当前设置"
+echo -e "${GREEN}x-ui enable${PLAIN}   - 设置x-ui开机自启"
+echo -e "${GREEN}x-ui disable${PLAIN}  - 取消x-ui开机自启"
+echo -e "${GREEN}x-ui log${PLAIN}      - 查看x-ui日志"
+echo -e "${GREEN}x-ui banlog${PLAIN}   - 查看Fail2ban封禁日志"
+echo -e "${GREEN}x-ui update${PLAIN}   - 更新x-ui面板"
+echo -e "${GREEN}x-ui legacy${PLAIN}   - 旧版本"
+echo -e "${GREEN}x-ui install${PLAIN}  - 重新安装x-ui面板"
+echo -e "${GREEN}x-ui uninstall${PLAIN} - 卸载x-ui面板"
 echo -e "${GREEN}==================================${PLAIN}"
