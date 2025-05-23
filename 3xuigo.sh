@@ -152,26 +152,7 @@ set_timezone() {
     print_success "时区设置完成: $(timedatectl | grep "Time zone" | awk '{print $3}')"
 }
 
-# 优化DNS
-optimize_dns() {
-    print_info "优化DNS设置..."
-    
-    # 备份原DNS配置
-    cp /etc/resolv.conf /etc/resolv.conf.bak
-    
-    # 设置DNS服务器
-    cat > /etc/resolv.conf << EOF
-nameserver 8.8.8.8
-nameserver 8.8.4.4
-nameserver 1.1.1.1
-nameserver 1.0.0.1
-EOF
 
-    # 防止DNS被覆盖
-    chattr +i /etc/resolv.conf
-    
-    print_success "DNS优化完成"
-}
 
 # 安装3x-ui面板
 install_3xui() {
@@ -181,9 +162,8 @@ install_3xui() {
     bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)
     
     if [[ $? -eq 0 ]]; then
-        print_success "3x-ui面板安装完成,请复制上面生成的面板信息"
-        # 获取面板信息
-        print_warning "请复制上面生成的面板信息！"
+        print_success "3x-ui面板安装完成"
+        print_warning "请复制显示的面板信息"
     else
         print_error "3x-ui面板安装失败"
         exit 1
@@ -232,7 +212,6 @@ main() {
     optimize_bbr
     optimize_kernel
     set_timezone
-    optimize_dns
     install_3xui
     
     # 显示系统信息
