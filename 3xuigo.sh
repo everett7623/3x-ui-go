@@ -181,14 +181,9 @@ install_3xui() {
     bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)
     
     if [[ $? -eq 0 ]]; then
-        print_success "3x-ui面板安装完成"
-        
+        print_success "3x-ui面板安装完成,请复制上面生成的面板信息"
         # 获取面板信息
-        print_info "3x-ui面板信息："
-        print_info "默认端口: 54321"
-        print_info "默认用户名: admin"
-        print_info "默认密码: admin"
-        print_warning "请立即登录面板修改默认用户名和密码！"
+        print_warning "请复制上面生成的面板信息！"
     else
         print_error "3x-ui面板安装失败"
         exit 1
