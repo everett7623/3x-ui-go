@@ -62,9 +62,11 @@ wget -O 3xuigo.sh https://raw.githubusercontent.com/everett7623/3x-ui-go/main/3x
 ![image](https://github.com/user-attachments/assets/10948e0b-1b61-4e5a-8e5e-5c779c63431e)
 
 ### 登录信息
+
 ![image](https://github.com/user-attachments/assets/1e67c56c-20e8-4aa0-94ae-d3ce7eb4a078)
 
-安装后可删除脚本
+安装后可删除此一键脚本
+
 ![image](https://github.com/user-attachments/assets/470d3125-d717-4cfc-84f0-0c126ee4a7e2)
 
 ## 📱 客户端配置
