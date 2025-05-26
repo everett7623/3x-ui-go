@@ -56,27 +56,9 @@
 
 ```bash
 # 基础安装
-bash <(curl -Ls https://raw.githubusercontent.com/everett7623/3x-ui-go/main/install.sh)
-
-# 指定版本安装
-VERSION=v1.0.0 bash <(curl -Ls https://raw.githubusercontent.com/everett7623/3x-ui-go/main/install.sh)
+wget -O 3xuigo.sh https://raw.githubusercontent.com/everett7623/3x-ui-go/main/3xuigo.sh && chmod +x 3xuigo.sh && ./3xuigo.sh
 ```
 
-### Docker 部署
-
-```bash
-# 拉取镜像
-docker pull everett7623/3x-ui-go:latest
-
-# 运行容器
-docker run -d \
-  --name 3x-ui-go \
-  --restart unless-stopped \
-  --network host \
-  -v /etc/3x-ui-go:/etc/3x-ui-go \
-  -v /var/log/3x-ui-go:/var/log/3x-ui-go \
-  everett7623/3x-ui-go:latest
-```
 
 ### 手动编译
 
