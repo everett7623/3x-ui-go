@@ -59,140 +59,8 @@
 wget -O 3xuigo.sh https://raw.githubusercontent.com/everett7623/3x-ui-go/main/3xuigo.sh && chmod +x 3xuigo.sh && ./3xuigo.sh
 ```
 
+![image](https://github.com/user-attachments/assets/10948e0b-1b61-4e5a-8e5e-5c779c63431e)
 
-### 手动编译
-
-```bash
-# 克隆仓库
-git clone https://github.com/everett7623/3x-ui-go.git
-cd 3x-ui-go
-
-# 安装依赖
-go mod tidy
-
-# 编译
-go build -ldflags="-s -w" -o 3x-ui-go main.go
-
-# 运行
-./3x-ui-go
-```
-
-## 🛠️ 配置
-
-### 首次配置
-
-1. 安装完成后访问面板：`http://your-server-ip:2053`
-2. 默认登录信息：
-   - 用户名：`admin`
-   - 密码：`admin`
-3. **请立即修改默认密码**
-
-### SSL 证书配置
-
-```bash
-# 使用管理脚本
-./3x-ui-go cert
-
-# 或使用 Let's Encrypt
-./3x-ui-go cert --provider letsencrypt --domain your-domain.com --email your-email@example.com
-```
-
-### 防火墙配置
-
-```bash
-# Ubuntu/Debian
-ufw allow 2053
-ufw allow 443
-ufw allow 80
-
-# CentOS/RHEL
-firewall-cmd --permanent --add-port=2053/tcp
-firewall-cmd --permanent --add-port=443/tcp
-firewall-cmd --permanent --add-port=80/tcp
-firewall-cmd --reload
-```
-
-## 📋 管理命令
-
-```bash
-# 查看状态
-./3x-ui-go status
-
-# 启动服务
-./3x-ui-go start
-
-# 停止服务
-./3x-ui-go stop
-
-# 重启服务
-./3x-ui-go restart
-
-# 查看日志
-./3x-ui-go logs
-
-# 备份数据
-./3x-ui-go backup
-
-# 恢复数据
-./3x-ui-go restore backup.tar.gz
-
-# 更新面板
-./3x-ui-go update
-
-# 卸载
-./3x-ui-go uninstall
-```
-
-## 🔧 高级配置
-
-### 配置文件
-
-主配置文件位于：`/etc/3x-ui-go/config.yaml`
-
-```yaml
-# 面板配置
-panel:
-  port: 2053
-  path: /
-  ssl: false
-  cert_file: ""
-  key_file: ""
-
-# 数据库配置
-database:
-  type: sqlite3
-  path: /etc/3x-ui-go/3x-ui-go.db
-
-# 日志配置
-log:
-  level: info
-  file: /var/log/3x-ui-go/3x-ui-go.log
-  max_size: 10
-  max_days: 7
-
-# Xray 配置
-xray:
-  bin_path: /usr/local/bin/xray
-  config_path: /etc/3x-ui-go/xray.json
-  log_level: warning
-```
-
-### 环境变量
-
-```bash
-# 面板端口
-export XUI_PORT=2053
-
-# 数据库路径
-export XUI_DB_PATH=/etc/3x-ui-go/3x-ui-go.db
-
-# 日志级别
-export XUI_LOG_LEVEL=info
-
-# SSL 配置
-export XUI_SSL_CERT=/path/to/cert.pem
-export XUI_SSL_KEY=/path/to/key.pem
-```
 
 ## 📱 客户端配置
 
@@ -200,11 +68,11 @@ export XUI_SSL_KEY=/path/to/key.pem
 
 | 平台 | 客户端 | 下载链接 |
 |------|--------|----------|
-| Windows | v2rayN / Clash | [v2rayN](https://github.com/2dust/v2rayN) |
-| macOS | ClashX / v2rayU | [ClashX](https://github.com/yichengchen/clashX) |
-| Linux | v2ray-core / Clash | [v2ray-core](https://github.com/v2fly/v2ray-core) |
-| Android | v2rayNG / Clash | [v2rayNG](https://github.com/2dust/v2rayNG) |
-| iOS | Shadowrocket / Quantumult | App Store |
+| Windows | v2rayN | [v2rayN](https://github.com/2dust/v2rayN) |
+| macOS | Karing | [Karing](https://github.com/koroshkorosh1/Karing/releases) |
+| Linux | Hiddify | [Hiddify](https://github.com/hiddify/hiddify-app/releases) |
+| Android | v2rayNG | [v2rayNG](https://github.com/2dust/v2rayNG) |
+| iOS | Shadowrocket | [购买链接](https://s.y8o.de/xiaohuojian) |
 
 ### 配置导入
 
@@ -212,101 +80,6 @@ export XUI_SSL_KEY=/path/to/key.pem
 2. 复制订阅链接或扫描二维码
 3. 在客户端中导入配置
 4. 选择节点并连接
-
-## 🔒 安全建议
-
-### 基础安全
-
-- ✅ 修改默认管理员密码
-- ✅ 使用强密码策略
-- ✅ 启用双因素认证
-- ✅ 定期更新系统和面板
-- ✅ 配置防火墙规则
-
-### 高级安全
-
-- 🔐 使用非标准端口
-- 🔐 配置 Nginx 反向代理
-- 🔐 使用 Cloudflare CDN
-- 🔐 启用访问日志审计
-- 🔐 配置 fail2ban 防护
-
-## 📊 监控与维护
-
-### 系统监控
-
-```bash
-# 查看服务状态
-systemctl status 3x-ui-go
-
-# 查看资源使用
-htop
-df -h
-free -h
-
-# 查看网络连接
-netstat -tulpn | grep 2053
-```
-
-### 日志分析
-
-```bash
-# 查看面板日志
-tail -f /var/log/3x-ui-go/3x-ui-go.log
-
-# 查看 Xray 日志
-tail -f /var/log/xray/access.log
-
-# 查看错误日志
-tail -f /var/log/xray/error.log
-```
-
-## 🔄 备份与恢复
-
-### 自动备份
-
-```bash
-# 设置定时备份
-crontab -e
-
-# 每天凌晨2点备份
-0 2 * * * /usr/local/bin/3x-ui-go backup
-```
-
-### 手动备份
-
-```bash
-# 创建备份
-./3x-ui-go backup
-
-# 恢复备份
-./3x-ui-go restore backup-20231201-020000.tar.gz
-```
-
-## 🆙 更新升级
-
-### 自动更新
-
-```bash
-# 检查更新
-./3x-ui-go check-update
-
-# 自动更新
-./3x-ui-go update
-```
-
-### 手动更新
-
-```bash
-# 下载最新版本
-wget https://github.com/everett7623/3x-ui-go/releases/latest/download/3x-ui-go-linux-amd64.tar.gz
-
-# 解压并替换
-tar -xzf 3x-ui-go-linux-amd64.tar.gz
-systemctl stop 3x-ui-go
-cp 3x-ui-go /usr/local/bin/
-systemctl start 3x-ui-go
-```
 
 ## 🤝 贡献指南
 
@@ -339,8 +112,6 @@ systemctl start 3x-ui-go
 
 ## 📞 支持
 
-- 📧 **Email**: support@everett7623.dev
-- 💬 **Telegram**: [@everett7623](https://t.me/everett7623)
 - 🐛 **Issues**: [GitHub Issues](https://github.com/everett7623/3x-ui-go/issues)
 - 📖 **文档**: [Wiki](https://github.com/everett7623/3x-ui-go/wiki)
 
