@@ -59,25 +59,24 @@
 
 ```bash
 # 一键安装脚本
-wget -O 3xuigo.sh https://raw.githubusercontent.com/everett7623/3x-ui-go/main/3xuigo.sh && chmod +x 3xuigo.sh && ./3xuigo.sh
+bash <(curl -Ls https://raw.githubusercontent.com/everett7623/3x-ui-go/main/3xuigo.sh)
 ```
 
 ### 🎯 安装过程
 
-安装脚本将自动完成以下步骤：
-1. 检测系统环境
-2. 安装必要依赖
-3. 下载并安装 3x-ui-go
-4. 配置系统服务
-5. 启动面板服务
+--- 菜单 ---
+1. 一键3X-UI (安装依赖, BBR优化, 安装原版3x-ui)
+2. 清理一键3X-UI脚本文件
+3. 卸载原版3x-ui并清理脚本文件
+4. 退出
 
-![安装界面](https://github.com/user-attachments/assets/10948e0b-1b61-4e5a-8e5e-5c779c63431e)
+
 
 ### 🔑 登录信息
 
 安装完成后，您将看到面板的登录信息：
 
-![登录信息](https://github.com/user-attachments/assets/1e67c56c-20e8-4aa0-94ae-d3ce7eb4a078)
+
 
 > **⚠️ 安全提醒**: 请立即修改默认的用户名和密码！
 
@@ -85,7 +84,7 @@ wget -O 3xuigo.sh https://raw.githubusercontent.com/everett7623/3x-ui-go/main/3x
 
 安装完成后，您可以安全删除安装脚本：
 
-![删除脚本](https://github.com/user-attachments/assets/470d3125-d717-4cfc-84f0-0c126ee4a7e2)
+
 
 ```bash
 # 删除安装脚本
