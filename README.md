@@ -55,10 +55,9 @@
 | **内存** | 最小 256MB，推荐 512MB+ |
 | **存储** | 最小 10GB 可用空间 |
 
-### ⚡ 一键安装
+### ⚡ 一键原版3xui+bbr
 
 ```bash
-# 一键安装脚本
 bash <(curl -Ls https://raw.githubusercontent.com/everett7623/3x-ui-go/main/3xuigo.sh)
 ```
 
@@ -67,7 +66,7 @@ bash <(curl -Ls https://raw.githubusercontent.com/everett7623/3x-ui-go/main/3xui
 --- 菜单 ---
 1. 一键3X-UI (安装依赖, BBR优化, 安装原版3x-ui)
 2. 清理一键3X-UI脚本文件
-3. 卸载原版3x-ui并清理脚本文件
+3. 卸载原版3X-UI并清理脚本文件
 4. 退出
 
 
